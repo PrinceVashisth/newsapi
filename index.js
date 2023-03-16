@@ -3,7 +3,7 @@ const fileupload = require('express-fileupload');
 require('./db/database');
 const app = express();
 app.use(express.json());
-const port = 5000;
+const port = process.env.PORT || 5000;
 const Auth  = require('./routers/auth');
 const Post  = require('./routers/post');
 
