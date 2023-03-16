@@ -1,7 +1,8 @@
 const router = require('express').Router();
 const cloudinary = require('cloudinary').v2;
 const PostSchema = require('../models/post');
-
+const User = require('../models/Admins');
+const bcrypt = require('bcryptjs');
 cloudinary.config({ 
     cloud_name: 'dnkd8ncit', 
     api_key: '835945934675339', 
@@ -11,8 +12,14 @@ cloudinary.config({
 
 // create a post
 router.post('/create',async(req,res)=>{ 
+
     try {
-       const file = req.files.img;
+        const users = await User.findOne({Username:req.body.username});
+        if(!users) res.send("user not found....");
+          
+          const check = bcrypt.compare( users.password,req.body.password);
+             if(!check) res.send("Username or password Not Matching....");
+      const file = req.files.img;
       const respo = await cloudinary.uploader.upload(file.tempFilePath,(err,result)=>{
             return result;
       })
@@ -24,7 +31,7 @@ router.post('/create',async(req,res)=>{
             articleLink:req.body.articleLink,
             state:req.body.state    
         })
-        const Res = await user.save();
+         await user.save();
         res.send("Data upload sucessfully ..........");
         
     } catch (error) {
@@ -33,8 +40,9 @@ router.post('/create',async(req,res)=>{
 });
 
 // get all posts
-router.get('/getPosts',async(req,res)=>{
-    const respo = await PostSchema.find({state:req.body.state});
+router.get('/getPosts/:state',async(req,res)=>{
+
+    const respo = await PostSchema.find({state:req.params.state});
     res.send(respo);  
 });
 
