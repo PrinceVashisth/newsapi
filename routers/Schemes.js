@@ -1,16 +1,6 @@
 const Scheme = require('../models/Schemes');
 const router = require('express').Router();
 
-// router.post('/create', async (req, res) => {
-//   try {
-//     const model = await new Scheme(req.body);
-//     await model.save();
-//     res.status(201).send(model);
-//   } catch (err) {
-//     res.status(400).send(err);
-//   }
-// });
-
 router.post('/create', async(req, res) => {
   const newDocument =await new Scheme({
     state:req.body.state,
@@ -25,7 +15,6 @@ router.post('/create', async(req, res) => {
   res.send("Data insert Sucessfully");
 });
 
-
 // fetch all schemes that are related to them
 router.get('/:state/:district/:crop/:area/:income', async (req, res) => {
   try {
@@ -37,7 +26,7 @@ router.get('/:state/:district/:crop/:area/:income', async (req, res) => {
       district: { $in: [district] },
       Crop: { $in: [crop] },
       $and: [{ Area: { $lte: area } }],
-      $or: [{ income: { $gte: income } }]
+      $and: [{ income: { $gte: income } }]
     };
     // Find all matching documents
     const documents = await Scheme.find(query);
