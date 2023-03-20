@@ -36,11 +36,12 @@ router.get('/:state/:district/:crop/:area/:income', async (req, res) => {
       state: state,
       district: { $in: [district] },
       Crop: { $in: [crop] },
-      $or: [{ Area: { $gte: area } }],
+      $and: [{ Area: { $lte: area } }],
       $or: [{ income: { $gte: income } }]
     };
     // Find all matching documents
     const documents = await Scheme.find(query);
+    
     res.status(200).json(documents);
   } catch (err) {
     // Handle error
