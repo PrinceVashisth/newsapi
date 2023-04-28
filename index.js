@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const fileupload = require('express-fileupload');
 const bodyParser = require('body-parser');
@@ -9,6 +10,7 @@ const port = process.env.PORT || 5000;
 const Auth  = require('./routers/auth');
 const Post  = require('./routers/post');
 const Scheme  = require('./routers/Schemes');
+const path = require('path');
 
 app.use(express.urlencoded({ extended: false })); 
 
